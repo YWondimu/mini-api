@@ -19,6 +19,10 @@ app.get("/status", (req, res) => {
   res.json({ uptime: process.uptime(), now: new Date().toISOString() });
 });
 
+app.get("/echo", (req, res) => {
+  res.json({ youSent: req.body });
+});
+
 app.post("/echo", (req, res) => {
   res.json({ youSent: req.body });
 });
