@@ -15,6 +15,14 @@ app.get("/", (req, res) => {
   res.json({ ok: true, message: "Hello from the internet 👋" });
 });
 
+app.get("/health", (_req, res) => {
+  res.json({
+    ok: true,
+    hasUrl: !!process.env.SUPABASE_URL,
+    hasKey: !!process.env.SUPABASE_PUBLISHABLE_KEY
+  });
+});
+
 app.get("/status", (req, res) => {
   res.json({ uptime: process.uptime(), now: new Date().toISOString() });
 });
