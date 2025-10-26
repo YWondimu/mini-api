@@ -2,19 +2,26 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { supabase } from "./supabaseClient.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // must listen on process.env.PORT for Render
 const PORT = process.env.PORT || 3000;
+
+const app = express();
 
 app.use(cors());
 //// allow your frontends; keep wide-open during dev if needed
 //app.use(cors({ origin: ["http://localhost:3000", "https://ljdabysfdrezrouetktr.supabase.co"] }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.json({ ok: true, message: "Hello from the internet 👋" });
+  //res.json({ ok: true, message: "Hello from the internet 👋" });
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/health", (_req, res) => {
