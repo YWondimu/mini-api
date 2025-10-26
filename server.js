@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool } from "./db.js";
+import { supabase } from "./supabaseClient.js";
 
 const app = express();
 
@@ -26,26 +26,25 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// DATABASE
 
-// one-time init (idempotent)
-await pool.query(`
-  CREATE TABLE IF NOT EXISTS notes (
-    id SERIAL PRIMARY KEY,
-    text TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT now()
-  );
-`);
-
+// 📝 create note
 app.post("/notes", async (req, res) => {
   const { text } = req.body ?? {};
   if (!text) return res.status(400).json({ error: "text required" });
-  await pool.query("INSERT INTO notes(text) VALUES($1)", [text]);
+
+  const { error } = await supabase.from("notes").insert({ text });
+  if (error) return res.status(500).json({ error: error.message });
+
   res.json({ ok: true });
 });
 
+// 📄 list notes
 app.get("/notes", async (_req, res) => {
-  const { rows } = await pool.query("SELECT * FROM notes ORDER BY id DESC");
-  res.json(rows);
-});
+  const { data, error } = await supabase
+    .from("notes")
+    .select("*")
+    .order("id", { ascending: false });
 
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
