@@ -43,7 +43,7 @@ app.listen(PORT, "0.0.0.0", () => {
 // 📝 create note
 app.post("/notes", async (req, res) => {
   const { text } = req.body ?? {};
-  if (!text) return res.status(400).json({ error: "text required" });
+  if (!text || typeof text !== "string") return res.status(400).json({ error: "text required" });
 
   const { error } = await supabase.from("notes").insert({ text });
   if (error) return res.status(500).json({ error: error.message });
