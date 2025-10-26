@@ -9,14 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+//// allow your frontends; keep wide-open during dev if needed
+//app.use(cors({ origin: ["http://localhost:3000", "https://ljdabysfdrezrouetktr.supabase.co"] }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({ ok: true, message: "Hello from the internet 👋" });
 });
-
-// allow your frontends; keep wide-open during dev if needed
-app.use(cors({ origin: ["http://localhost:3000", "https://ljdabysfdrezrouetktr.supabase.co"] }));
 
 app.get("/health", (_req, res) => {
   res.json({
